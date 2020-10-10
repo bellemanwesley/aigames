@@ -1,0 +1,57 @@
+<html>
+<title>AI Games</title>
+<head>
+<link rel="icon" href="https://www.chess.com/bundles/web/favicons/favicon-32x32.c2a8280d.png">
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li id="nav_home" name="navs" class="nav-item active">
+            <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+          </li>
+          <li id="nav_projects" name="navs" class="nav-item">
+            <a class="nav-link" href="/tictactoe">TicTacToe</a>
+          </li>
+          <li id="nav_checkers" name="navs" class="nav-item">
+            <a class="nav-link" href="/checkers">Checkers</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+<br><br>
+
+  <div id="page_content" class="container">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-8">
+        <br>
+        <h1>Welcome</h1>
+        <p>This website consists of several games that I built. Each game is played against a computer which has played each game 
+        millions of times in order to learn the best strategies for play. I have not taught the computer what to look for - it only 
+        knows when it has won, lost, or tied. There are no heuristic methods or identifying traits, so the computer stores each configuration
+        and the decisions it made in that configuration. For games that require too much data to store each configuration, all possible decisions,
+        and the results of those decisions, I use <a href="https://medium.com/swlh/shrinking-big-data-with-bit-folding-4ea0aa6a055d" target="_blank">
+        bit folding</a> to shrink the data. Different bit folds play against one another and the more successful ones are used here.
+        </p>
+        <h2>Have fun!</h2>
+        <a href="https://www.wkbonline.net" target="_blank"><h1 class="text-right">My Homepage</h1></a>
+      </div>
+      <div class="col"></div>
+    </div>
+    
+  </div>
+
+</body>
+</html>
