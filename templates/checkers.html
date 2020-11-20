@@ -39,23 +39,23 @@
 <script>
 
 var my_canvas = document.getElementById("myCanvas");
-my_canvas.onload = ttt_loader();
+my_canvas.onload = checkers_loader();
 var w = window.innerWidth;
 var h = window.innerHeight;
 var size = Math.min(w*0.66, h*0.66);
 var my_board = [
+  [1,0,1,0,1,0,1,0],
+  [0,1,0,1,0,1,0,1],
+  [1,0,1,0,1,0,1,0],
   [0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0]
+  [0,3,0,3,0,3,0,3],
+  [3,0,3,0,3,0,3,0],
+  [0,3,0,3,0,3,0,3]
   ];
 var latest_move = "";
 
-function ttt_loader() {
+function checkers_loader() {
   var w = window.innerWidth;
   var h = window.innerHeight;
   var size = Math.min(w*0.66, h*0.66);
@@ -63,38 +63,52 @@ function ttt_loader() {
   my_canvas.height = size;
   my_canvas.style = "border:1px solid #000000; position:fixed; right: ".concat(((w-size)/2).toString()).concat("; bottom: ").concat(((h-size)/2).toString()).concat(";");
   var ctx = my_canvas.getContext("2d");
+  draw_board(ctx, my_board);
+  // Add event listener for `click` events.
+  my_canvas.addEventListener('click', checkers_click, false);
+}
+
+function draw_board(ctx, board) {
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+  var size = Math.min(w*0.66, h*0.66);
   for (var i=0; i<8; i++) {
     for (var j=0; j<8; j++) {
       if (j%2 == i%2) {
         ctx.beginPath();
+        ctx.fillStyle = "green";
         ctx.rect(size/8*i, size/8*j, size/8, size/8);
         ctx.fill();
+        
+        if (board[i][j] === 3) {
+          ctx.beginPath();
+          ctx.arc(size/8*i+size/16, size/8*j+size/16, size/20, 0, 2 * Math.PI);
+          ctx.fillStyle = "black";
+          ctx.fill();
+        } /*
+        if (board[i][j] === 1) {
+          ctx.beginPath();
+          ctx.arc(size/8*i+size/16, size/8*j+size/16, size/20, 0, 2 * Math.PI);
+          ctx.fillStyle = "#C70039";
+          ctx.fill();          
+        }
+        */
       }
     }
   }
-  
-  // Add event listener for `click` events.
-  //my_canvas.addEventListener('click', ttt_click, false);
 }
 
-function ttt_click(event) {
+function checkers_click(event) {
     var ctx = my_canvas.getContext("2d");
     var x = event.pageX - (w-size)/2,
         y = event.pageY - (h-size)/2;
-    var move = [Math.floor(y/(size/3)),Math.floor(x/(size/3))];
-    if (my_board[move[0]][move[1]]===0) {
-      //alert(check_board(my_board));
-      if (check_board(my_board)) {
-        draw_letter(ctx, "X", move[1], move[0]);
-        my_board[move[0]][move[1]] = 1;
-      }
-      //alert(check_board(my_board));
-      if (check_board(my_board)) {
-        var computer_move = get_move(my_board);
-        draw_letter(ctx, "O",computer_move[1],computer_move[0]);
-        my_board[computer_move[0]][computer_move[1]] = -1;
-      }
-      check_board(my_board);
+    var click = [Math.floor(y/(size/8)),Math.floor(x/(size/8))];
+    if (my_board[click[0]][click[1]] != 0) {
+      ctx.beginPath();
+      ctx.strokeStyle = "yellow";
+      ctx.lineWidth = "6";
+      ctx.rect(size/8*click[1], size/8*click[0], size/8, size/8);
+      ctx.stroke();    
     }
 }
 
