@@ -6,6 +6,12 @@ import sys
 sys.path.insert(0, '/home/ubuntu/aigames/scripts/')
 import database as db
 
+#STEP 1: Define initial state and initial team
+def initial_state():
+    initial = [[0,0,0],[0,0,0],[0,0,0]]
+    initial_team = 1
+    return initial, initial_team
+
 #STEP 2: Determine which moves you can make given state s
 def find_moves(s):
     moves = []
@@ -24,12 +30,9 @@ def decide_move(moves,strengths):
             strength = strengths[move]
         else:
             strength = [0,0]
-        print(move,strength)
         selector_list.append(float(strength[0]+1)/float(strength[1]+2))
     selector_var = random()*sum(selector_list)
     selected = False
-    print(selector_list)
-    print(selector_var)
     for i in range(len(selector_list)):
         if selector_var < selector_list[i] and not selected:
             move = moves[i]
@@ -68,6 +71,20 @@ def game_status(s):
     else:
         return [False, winner]
 
+#STEP 6: When the game is over, update the all_strengths dictionary depending on who won
+def update_strengths(all_strengths,game_choices, winner):
+    for x in game_choices:
+        s = str(x[1])
+        move = str(move_transform(x[2]))
+        if s not in all_strengths:
+            all_strengths[s] = {move:[0,0]}
+        elif move not in all_strengths[s]:
+            all_strengths[s][move] = [0,0]
+        if x[0] == winner:
+            all_strengths[s][move][0] += 1
+        all_strengths[s][move][1] += 1
+    return all_strengths        
+
 #Helper A: Create a transformation from a move in moves to a string
 def move_transform(move):
     move_t = ""
@@ -83,19 +100,36 @@ def state_transform(s):
             state += str(y+1)
     return int(state, 3)
     
-def return_move(board_str, team):
-    board_l = board_str.split(",")
-    board = [[0,0,0],[0,0,0],[0,0,0]]
-    for i in range(9):
-        row = i//3
-        col = i%3
-        board[row][col] = int(board_l[i])
-    s = state_transform(board)
-    moves = find_moves(board)
+
+def play_game(all_strengths):
+    s, team = initial_state()
+    con = True
+    game_choices = []
+    while con:
+        moves = find_moves(s)
+        state = state_transform(s)
+        if len(moves) > 0:
+            if str(state) in all_strengths:
+                strengths = all_strengths[str(state)]
+            else:
+                strengths = {}
+            move = decide_move(moves, strengths)
+            game_choices.append([team,state,move])
+            s, team = make_move(s, move, team)
+            status = game_status(s)
+            con = status[0]
+        else:
+            #Handle what to do if there are no moves to make
+            status = ["Tie",0]
+            con = False
+    winner = status[1]
+    return update_strengths(all_strengths, game_choices, winner)
+    
+def main():
+    iterations = 1000000 #Number of times you want to play the game
     all_strengths = db.retrieve("ttt_state","1")
-    if s in all_strengths:
-        strengths = all_strengths[s]
-    else:
-        strengths = {}
-    move = decide_move(moves,strengths)
-    return move
+    for i in range(iterations):
+        all_strengths = play_game(all_strengths)
+    db.send("ttt_state",all_strengths,"1")
+    
+main()

@@ -5,7 +5,7 @@ def send(index, data,_id):
     headers = {'Content-Type': 'application/json'}
     data = json.dumps(data)
     x = requests.put("http://172.31.40.133/"+index+"/_doc/"+_id,headers=headers,data=data)
-    print(x.text)
+    return x.text
 
 def retrieve_all(index):
     x = requests.get("http://172.31.40.133/"+index+"/_search")
@@ -20,4 +20,3 @@ def retrieve(index,_id):
     x = requests.get("http://172.31.40.133/"+index+"/_source/"+_id)
     response = json.loads(x.text)
     return(response)
-    
