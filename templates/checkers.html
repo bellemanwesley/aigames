@@ -34,15 +34,20 @@
 
 <br><br>
 
+<img src="https://wkbaigames.s3.us-east-2.amazonaws.com/crown.png" id="crown" width="100px" hidden/>
+
 <canvas id="myCanvas"></canvas>
 
 <script>
 
-var my_canvas = document.getElementById("myCanvas");
-my_canvas.onload = checkers_loader();
 var w = window.innerWidth;
 var h = window.innerHeight;
 var size = Math.min(w*0.66, h*0.66);
+var move_piece = [-1,-1]
+
+// team=1 means user plays black (grey), team=2 means user plays red, black is default
+var team = 1;
+
 var my_board = [
   [1,0,1,0,1,0,1,0],
   [0,1,0,1,0,1,0,1],
@@ -55,10 +60,10 @@ var my_board = [
   ];
 var latest_move = "";
 
+var my_canvas = document.getElementById("myCanvas");
+my_canvas.onload = checkers_loader();
+
 function checkers_loader() {
-  var w = window.innerWidth;
-  var h = window.innerHeight;
-  var size = Math.min(w*0.66, h*0.66);
   my_canvas.width = size;
   my_canvas.height = size;
   my_canvas.style = "border:1px solid #000000; position:fixed; right: ".concat(((w-size)/2).toString()).concat("; bottom: ").concat(((h-size)/2).toString()).concat(";");
@@ -69,9 +74,7 @@ function checkers_loader() {
 }
 
 function draw_board(ctx, board) {
-  var w = window.innerWidth;
-  var h = window.innerHeight;
-  var size = Math.min(w*0.66, h*0.66);
+  ctx.clearRect(0, 0, my_canvas.width, my_canvas.height);
   for (var i=0; i<8; i++) {
     for (var j=0; j<8; j++) {
       if (j%2 == i%2) {
@@ -80,19 +83,22 @@ function draw_board(ctx, board) {
         ctx.rect(size/8*i, size/8*j, size/8, size/8);
         ctx.fill();
         
-        if (board[i][j] === 3) {
+        if (board[j][i] === 3 || board[j][i] == 4) {
           ctx.beginPath();
           ctx.arc(size/8*i+size/16, size/8*j+size/16, size/20, 0, 2 * Math.PI);
-          ctx.fillStyle = "black";
+          ctx.fillStyle = "grey";
           ctx.fill();
-        } /*
-        if (board[i][j] === 1) {
+        }
+        if (board[j][i] === 1 || board[j][i] == 2) {
           ctx.beginPath();
           ctx.arc(size/8*i+size/16, size/8*j+size/16, size/20, 0, 2 * Math.PI);
           ctx.fillStyle = "#C70039";
           ctx.fill();          
         }
-        */
+        if (board[j][i] == 2 || board[j][i] == 4) {
+          var img = document.getElementById("crown");
+          ctx.drawImage(img, size/8*i+size/50, size/8*j+size/50, size/12, size/12);
+        }
       }
     }
   }
@@ -104,69 +110,25 @@ function checkers_click(event) {
         y = event.pageY - (h-size)/2;
     var click = [Math.floor(y/(size/8)),Math.floor(x/(size/8))];
     if (my_board[click[0]][click[1]] != 0) {
+      draw_board(ctx, my_board);
       ctx.beginPath();
       ctx.strokeStyle = "yellow";
       ctx.lineWidth = "6";
       ctx.rect(size/8*click[1], size/8*click[0], size/8, size/8);
       ctx.stroke();    
+      move_piece = [click[0],click[1]];
     }
-}
-
-function check_board(board, ctx) {
-  var winner = 0;
-  var ctx = my_canvas.getContext("2d");
-  for (var i=0; i<3; i++) {
-    if (board[i][0]===board[i][1]&&board[i][1]===board[i][2]&&board[i][2]!=0) {
-      winner = board[i][0];
+    if (my_board[click[0]][click[1]] === 0 && move_piece[0] != -1) {
+      my_board[click[0]][click[1]] =  my_board[move_piece[0]][move_piece[1]];
+      my_board[move_piece[0]][move_piece[1]] = 0;
+      draw_board(ctx, my_board);
+      move_piece = [-1,-1];
+      console.log(my_board);
+      my_board = get_move(my_board);
+      console.log(my_board);
+      draw_board(ctx, my_board);
     }
-  }
-  for (i=0; i<3; i++) {
-    if (board[0][i]===board[1][i]&&board[1][i]===board[2][i]&&board[2][i]!=0) {
-      winner = board[0][i];
-    }
-  }
-  if (board[0][0]===board[1][1]&&board[1][1]===board[2][2]&&board[2][2]!=0) {
-    winner = board[0][0];
-  }
-  if (board[0][2]===board[1][1]&&board[1][1]===board[2][0]&&board[2][0]!=0) {
-    winner = board[0][2];
-  }
-  //alert(board);
-  //alert(winner);
-  if (winner === 0) {
-    return true;
-  } else {
-    my_canvas.removeEventListener('click', ttt_click);
-    setTimeout(function(){ ttt_loader(); my_board = [[0,0,0],[0,0,0],[0,0,0]];}, 3000);
-    my_board = [[0,0,0],[0,0,0],[0,0,0]];
-    return false;
-  }
-}
-
-function draw_line(ctx, s_x,s_y,e_x,e_y) {
-  ctx.beginPath();
-  ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.moveTo(s_x,s_y);
-  ctx.lineTo(e_x, e_y);
-  ctx.stroke();
-}
-
-function draw_letter(ctx, letter, x, y) {
-  var font_size = Math.floor(size/5).toString();
-  ctx.font = font_size.concat("px Arial");
-  var x_dict = {
-    0: size/10,
-    1: size/2.3, 
-    2: size/1.3, 
-  };
-  var y_dict = {
-    0: size/4,
-    1: size/1.8,
-    2: size/1.15,
-  };
-  ctx.fillText(letter, x_dict[x], y_dict[y]);
-}
+ }
 
 function xhr(my_dict) {
   var my_x_www = "";
@@ -180,7 +142,7 @@ function xhr(my_dict) {
        latest_move = this.responseText;
     }
   };
-  xhttp.open("POST", "/tictactoe/", false);
+  xhttp.open("POST", "/checkers/", false);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(my_x_www);
 }
@@ -195,7 +157,18 @@ function get_move(board) {
   }
   xhr({"csrfmiddlewaretoken":token, "board": board_str});
   latest_move = latest_move.replaceAll(" ","").replaceAll("[","").replaceAll("]","");
-  var new_board = latest_move.split(",");
+  var new_board_l = latest_move.split(",");
+  for (i=0; i<new_board_l.length; i++) {
+    new_board_l[i] = parseInt(new_board_l[i]);
+  }
+  var new_board = [];
+  for (i=0; i<8; i++) {
+    var row = [];
+    for (j=0; j<8; j++) {
+      row.push(new_board_l[i*8+j]);
+    }
+    new_board.push(row);
+  }
   return new_board;
 }
   

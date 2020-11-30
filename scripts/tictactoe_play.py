@@ -81,7 +81,13 @@ def state_transform(s):
             state += str(y+1)
     return int(state, 3)
     
-def return_move(board, team):
+def return_move(board_str, team):
+    board_l = board_str.split(",")
+    board = [[0,0,0],[0,0,0],[0,0,0]]
+    for i in range(9):
+        row = i//3
+        col = i%3
+        board[row][col] = int(board_l[i])
     s = state_transform(board)
     moves = find_moves(board)
     with open("/home/ubuntu/aigames/scripts/files/tictactoe.json","r") as f:
@@ -92,6 +98,3 @@ def return_move(board, team):
         strengths = {}
     move = decide_move(moves,strengths)
     return move
-    
-    
-print(return_move([[1,0,0],[0,0,0],[0,0,0]],1))

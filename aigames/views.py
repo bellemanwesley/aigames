@@ -6,25 +6,23 @@ import json
 import sys
 sys.path.insert(0, '/home/ubuntu/aigames/scripts/')
 import tictactoe_play
+import checkers_play
 
 def home(request):
 	return(render(request,'home.html',{}))
 	
 def tictactoe(request):
     if request.method == "POST":
-        board_str = request.POST["board"]
-        board_l = board_str.split(",")
-        board = [[0,0,0],[0,0,0],[0,0,0]]
-        print(board_str)
-        for i in range(9):
-            row = i//3
-            col = i%3
-            board[row][col] = int(board_l[i])
-        print(board)
+        board = request.POST["board"]
         my_list = tictactoe_play.return_move(board, -1)
         return HttpResponse(str(my_list),content_type="text/plain")
     else:
         return(render(request,'tictactoe.html',{}))
     
 def checkers(request):
-    return(render(request,'checkers.html',{}))
+    if request.method == "POST":
+        board = request.POST["board"]
+        new_board = checkers_play.return_move(board, -1)
+        return HttpResponse(new_board,content_type="text/plain")
+    else:
+        return(render(request,'checkers.html',{}))
