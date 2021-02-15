@@ -3,7 +3,11 @@ from random import randint
 import copy
 import json
 import sys
-sys.path.insert(0, '/home/ubuntu/aigames/scripts/')
+import os
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, "scripts/"))
 import database as db
 
 #STEP 2: Determine which moves you can make given state s
@@ -92,10 +96,11 @@ def return_move(board_str, team):
         board[row][col] = int(board_l[i])
     s = state_transform(board)
     moves = find_moves(board)
-    all_strengths = db.retrieve("ttt_state","1")
-    if s in all_strengths:
-        strengths = all_strengths[s]
-    else:
-        strengths = {}
+    #all_strengths = db.retrieve("ttt_state","1")
+    #if s in all_strengths:
+    #    strengths = all_strengths[s]
+    #else:
+    #    strengths = {}
+    strengths = {}
     move = decide_move(moves,strengths)
     return move

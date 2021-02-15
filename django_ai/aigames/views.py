@@ -4,7 +4,11 @@ from django.http import HttpResponse
 from random import randint
 import json
 import sys
-sys.path.insert(0, '/home/ubuntu/aigames/scripts/')
+import os
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'scripts/'))
 import tictactoe_play
 import checkers_play
 
