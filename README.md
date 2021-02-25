@@ -1,7 +1,7 @@
 ```
     POST /tictactoe
-    {
-        "csrfmiddlewaretoken": csrf_token,
-        "board": board_string
-    }
+        {
+            "csrfmiddlewaretoken": csrf_token,
+            "board": board_string
+        }
 ```
