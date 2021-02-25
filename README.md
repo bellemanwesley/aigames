@@ -5,7 +5,7 @@ aigames
 
 ## Overview
 
-AIGames is a website located at http://aigames.wkbonline.net/. The website 
+AIGames is a website located at http://aigames.wkbonline.net/. The website allows users to play games against a machine with has learned the game with [state based machine learning](https://github.com/bellemanwesley/statebasedml). Feel free to fork this repository in order to build your own game servers. I am open to collaborating with anyone who has ideas on new algorithms for AI game play. You may install AI games on a RHEL server using the instructions below.
 
 Installation instructions
 -------------------------
@@ -14,41 +14,3 @@ Installation instructions
     cd aigames
     sh setup.sh
     sh run.sh
-
-## URLs
-The AIGames web server has three URLs:
-   - `/`: home page
-   - `/tictactoe`: tic-tac-toe game
-   - `/checkers`: checkers game
-
-# bitfold
-
-*import statebasedml.bitfold*
-
-```python
-	from statebasedml import bitfold
-```
-
-*bitfold has 2 methods*
-   - `gen_param()`: generates the parameters for a fold
-   - `fold()`: actually folds the input data
-
-## gen_param
-
-*request syntax*
-
-```python
-
-    fold_parameters = bitfold.gen_param(
-        size = 256
-    )
-
-```
-
-```
-    POST /tictactoe
-        {
-            "csrfmiddlewaretoken": csrf_token,
-            "board": board_string
-        }
-```

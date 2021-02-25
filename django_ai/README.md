@@ -1,9 +1,6 @@
-aigames
-========
+# AI Games Web Server
 
-## Overview
-
-This directory is dedicated to the web server front end for the website. Below I have documented all of the HTTP requests made between the client and the web server.
+This directory is dedicated to the web server front end for the website. Below I have documented all of the HTTP requests made between the client and the web server. The web server is written with Django.
 
 ## URLs
 The AIGames web server has three URLs:
