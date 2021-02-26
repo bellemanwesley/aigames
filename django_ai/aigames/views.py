@@ -30,3 +30,4 @@ def checkers(request):
         return HttpResponse(new_board,content_type="text/plain")
     else:
         return(render(request,'checkers.html',{}))
+

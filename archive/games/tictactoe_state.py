@@ -3,8 +3,6 @@ from random import randint
 import copy
 import json
 import sys
-sys.path.insert(0, '/home/ubuntu/aigames/scripts/')
-import database as db
 
 #STEP 1: Define initial state and initial team
 def initial_state():
@@ -127,9 +125,11 @@ def play_game(all_strengths):
     
 def main():
     iterations = 1000000 #Number of times you want to play the game
-    all_strengths = db.retrieve("ttt_state","1")
+    with open("files/tictactoe.json","r") as f:
+        all_strengths = json.load(f)
     for i in range(iterations):
         all_strengths = play_game(all_strengths)
-    db.send("ttt_state",all_strengths,"1")
+    with open("files/tictactoe.json","w+") as f:
+        json.dump(all_strengths,f)
     
 main()

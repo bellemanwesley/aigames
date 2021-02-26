@@ -44,22 +44,23 @@ var w = window.innerWidth;
 var h = window.innerHeight;
 var size = Math.min(w*0.66, h*0.66);
 var move_piece = [-1,-1]
-
+var my_board;
+var latest_move;
 // team=1 means user plays black (grey), team=2 means user plays red, black is default
 var team = 1;
 
-var my_board = [
-  [1,0,1,0,1,0,1,0],
-  [0,1,0,1,0,1,0,1],
-  [1,0,1,0,1,0,1,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0],
-  [0,3,0,3,0,3,0,3],
-  [3,0,3,0,3,0,3,0],
-  [0,3,0,3,0,3,0,3]
-  ];
-var latest_move = "";
 
+my_board = [
+   [1,0,1,0,1,0,1,0],
+   [0,1,0,1,0,1,0,1],
+   [1,0,1,0,1,0,1,0],
+   [0,0,0,0,0,0,0,0],
+   [0,0,0,0,0,0,0,0],
+   [0,3,0,3,0,3,0,3],
+   [3,0,3,0,3,0,3,0],
+   [0,3,0,3,0,3,0,3]
+   ];
+latest_move = "";
 var my_canvas = document.getElementById("myCanvas");
 my_canvas.onload = checkers_loader();
 
@@ -119,11 +120,14 @@ function checkers_click(event) {
       move_piece = [click[0],click[1]];
     }
     if (my_board[click[0]][click[1]] === 0 && move_piece[0] != -1) {
-      my_board[click[0]][click[1]] =  my_board[move_piece[0]][move_piece[1]];
+      if (my_board[move_piece[0]][move_piece[1]]%2 ===1 && [0,7].includes(click[0])) {
+        my_board[click[0]][click[1]] =  my_board[move_piece[0]][move_piece[1]] +1;
+      } else {
+        my_board[click[0]][click[1]] =  my_board[move_piece[0]][move_piece[1]];
+      }
       my_board[move_piece[0]][move_piece[1]] = 0;
       draw_board(ctx, my_board);
       move_piece = [-1,-1];
-      console.log(my_board);
       my_board = get_move(my_board);
       console.log(my_board);
       draw_board(ctx, my_board);
@@ -136,15 +140,28 @@ function xhr(my_dict) {
     my_x_www = my_x_www+key+"="+my_dict[key]+"&";
   }
   var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-       // Typical action to be performed when the document is ready:
-       latest_move = this.responseText;
-    }
-  };
-  xhttp.open("POST", "/checkers/", false);
+  xhttp.onload = handler;
+  xhttp.open("POST", "/checkers/",false);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(my_x_www);
+}
+
+function handler() {
+  if(this.status == 200) {
+    if (this.responseText == "loss") {
+      server_loss();
+    } else {
+      latest_move = this.responseText;
+    }
+  } else {
+    alert("Error!");
+  }
+}
+
+async function server_loss() {
+  alert("You win!");
+  await new Promise(r => setTimeout(r, 2000));
+  location.reload();
 }
 
 function get_move(board) {
