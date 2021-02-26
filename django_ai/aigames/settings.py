@@ -26,7 +26,7 @@ SECRET_KEY = secrets.token_hex(16)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','aigames.wkbonline.net']
 
 
 # Application definition
